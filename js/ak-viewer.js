@@ -36,6 +36,8 @@ function akvideoviewer(elem) {
 	this.view.append(this.video)
 
 	akvideoviewer.prototype.close = function() {
+		if(event.target.className == "akvideo")
+			return;
 		my.view.remove()
 		my.after()
 	}
@@ -63,8 +65,10 @@ function akvideoviewer(elem) {
 				marginLeft: 0
 			})
 		})
-		my.video.on('click', my.close)
+		//my.video.on('click', my.close)
 		my.view.on('click', my.close)
+
+		registerNavigationKeys()
 	}
 }
 
@@ -86,6 +90,8 @@ function akviewer(elem) {
 	this.view.append(this.image)
 
 	akviewer.prototype.close = function() {
+		if(event.target.className == "akimage")
+			return;
 		my.view.remove()
 		my.after()
 	}
@@ -114,7 +120,29 @@ function akviewer(elem) {
 				marginLeft: 0
 			})
 		})
-		my.image.on('click', my.close)
+		// my.image.on('click', my.close)
 		my.view.on('click', my.close)
+		registerNavigationKeys()
+
 	}
+}
+
+function registerNavigationKeys() {
+		document.onkeyup = function(event) {
+			if(event.keyCode == 27) { 
+			// ESC 
+				my.close();		
+			}
+
+			// left
+			if(event.keyCode == 37) {
+				// easy way would be to redirect the "...?img=xy" url to xy+1 url
+				// but diirty as hell
+			}
+
+			// right
+			if(event.keycode == 39) {
+
+			}
+		};
 }

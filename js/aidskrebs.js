@@ -1,3 +1,5 @@
+var fuckinghardocdedURL = "https://aidskrebs.net/";
+
 var pass = function(){}
 var getlast = function(coll){
 	return coll[coll.length-1]
@@ -33,7 +35,7 @@ aidskrebs = {
 			var targetid = urlObject().parameters["img"]
 			$.ajax({
 				type: 'GET',
-				url: '/api/' + targetid + '/1',
+				url: fuckinghardocdedURL + '/api/' + targetid + '/1',
 				dataType: 'json',
 				timeout: 2000,
 				context: $('body'),
@@ -43,12 +45,12 @@ aidskrebs = {
 						var videoviewer = new akvideoviewer($(".container"))
 						videoviewer.before = sharedbefore
 						videoviewer.after = sharedafter
-						videoviewer.open("images/"+item.img)
+						videoviewer.open(fuckinghardocdedURL + "images/"+item.img)
 					} else {
 						var viewer = new akviewer($(".container"))
 						viewer.before = sharedbefore
 						viewer.after = sharedafter
-						viewer.open("images/"+item.img)
+						viewer.open(fuckinghardocdedURL + "images/"+item.img)
 					}
 				}
 			})
@@ -59,19 +61,15 @@ aidskrebs = {
 		$.ajaxSettings.crossDomain = true
 		$.ajax({
 			type: 'GET',
-			url: '/api/newest/100',
+			url: fuckinghardocdedURL + '/api/newest/100',
 			dataType: 'json',
 			timeout: 2000,
 			context: $('body'),
 			success: function(data){
 				aidskrebs.Images = data.images;
 				for(var i = 0; i < data.images.length; i++){
-					src = "images/"+data.images[i].thumb
-					var info = ''
-					info += '<span>'+data.images[i].channel+'</span>'
-					info += '<span>'+data.images[i].user+'</span>'
-					info += '<span>'+aidsdate(data.images[i].date)+'</span>'
-					$("#grid").append('<li class="shown"><a class="imglink" id=elem'+data.images[i].id+' href="#"><img src="'+src+'"><p>'+info+'</p></a></li>');
+					var item = createImageElement(data.images[i]);
+					$("#grid").append(item);
 					clicker("#elem"+data.images[i].id,data.images[i])
 				}
 				imagesLoaded(aidskrebs.Gallery, function(){
@@ -96,19 +94,14 @@ aidskrebs = {
 			$.ajaxSettings.crossDomain = true
 			$.ajax({
 				type: 'GET',
-				url: '/api/' + getlast(aidskrebs.Images).id + '/20',
+				url: fuckinghardocdedURL + '/api/' + getlast(aidskrebs.Images).id + '/20',
 				dataType: 'json',
 				timeout: 2000,
 				context: $('body'),
 				success: function(data){
 					for(var i = 1; i < data.images.length; i++){
 						aidskrebs.Images.push(data.images[i])
-						src = "images/"+data.images[i].thumb
-						var info = ''
-						info += '<span>'+data.images[i].channel+'</span>'
-						info += '<span>'+data.images[i].user+'</span>'
-						info += '<span>'+aidsdate(data.images[i].date)+'</span>'
-						var item = $('<li class="shown"><a class="imglink" id=elem'+data.images[i].id+' href="#"><img src="'+src+'"><p>'+info+'</p></a></li>')
+						var item = createImageElement(data.images[i]);
 						$("#grid").append(item);
 						aidskrebs.Masonry.appended(item);
 						clicker("#elem"+data.images[i].id,data.images[i]);
@@ -124,24 +117,37 @@ aidskrebs = {
 	}
 }
 
+function createImageElement(image) {
+
+	var src = "images/" + image.thumb
+	var info = ''
+	info += '<a class="linksrc" href="' + image.source + '"><i class="fa fa-external-link-square"></i></a>'
+	info += '<span>' + image.channel + '</span>'
+	info += '<span>' + image.user + '</span>'
+	info += '<span>' + aidsdate(image.date) + '</span>'
+
+	var item = $('<li class="shown"><a class="imglink" id="elem' + image.id + '" href="#"><img src="' + src + '"><p>' + info + '</p></a></li>')
+	return item
+}
+
 function clicker(elemid, i){
 	$(elemid).on('click', function(id) {
 		if(i.img.endsWith(".webm")){
 			var videoviewer = new akvideoviewer($(".container"))
 			videoviewer.before = function(){
 				sharedbefore()
-				history.pushState({}, 'A I D S K R E B S', '/?img='+i.id);
+				//history.pushState({}, 'A I D S K R E B S', fuckinghardocdedURL + '/?img='+i.id);
 			}
 			videoviewer.after = sharedafter
-			videoviewer.open("images/"+i.img)
+			videoviewer.open(fuckinghardocdedURL + "images/"+i.img)
 		} else {
 			var viewer = new akviewer($(".container"))
 			viewer.before = function(){
 				sharedbefore()
-				history.pushState({}, 'A I D S K R E B S', '/?img='+i.id);
+				//history.pushState({}, 'A I D S K R E B S', fuckinghardocdedURL + '/?img='+i.id);
 			}
 			viewer.after = sharedafter
-			viewer.open("images/"+i.img)
+			viewer.open(fuckinghardocdedURL + "images/"+i.img)
 		}
 		return false
 	})
@@ -186,7 +192,7 @@ function aidsdate(unixtime) {
 	var month = (date.getMonth() + 1)
 	if (date.getMonth() + 1 < 10) month = '0' + month;
 	var year = date.getFullYear();
-	return year + "-" + month + "-"+ day + ' ' + hours + ':' + minutes;
+	return day + "." + month + "." + year + ' ' + hours + ':' + minutes;
 }
 
 function urlObject(options) {
