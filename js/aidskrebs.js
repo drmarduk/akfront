@@ -153,7 +153,6 @@ aidskrebs = {
 }
 
 function createImageElement(image) {
-
 	var src = fuckinghardocdedURL+ "images/" + image.thumb
 	var info = ''
 	info += '<a class="linksrc" href="' + image.source + '"><i class="fa fa-external-link-square"></i></a>'

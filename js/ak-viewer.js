@@ -68,10 +68,9 @@ function akvideoviewer(elem) {
 				marginLeft: 0
 			})
 		})
-		//my.video.on('click', my.close)
-		my.view.on('click', my.close)
-
-		registerNavigationKeys(my)
+		
+		my.view.on('click', my.close);
+		registerNavigationKeys(my);
 	}
 }
 
@@ -126,36 +125,30 @@ function akviewer(elem) {
 				marginLeft: 0
 			})
 		})
-		// my.image.on('click', my.close)
-		my.view.on('click', my.close)
-		registerNavigationKeys(my)
-
+		
+		my.view.on('click', my.close);
+		registerNavigationKeys(my);
 	}
 }
 
+// registerNavigationKeys handles the keyboard navigation.
+// can be extended to other keyCodes.
 function registerNavigationKeys(hwd) {
-		document.onkeyup = function(event) {
-			if(event.keyCode == 27) { 
-			// ESC 
-				hwd.close();
-			}
+	document.onkeyup = function(event) {
+		if(event.keyCode == 27) { // ESC
+			hwd.close();
+		}
 
-			// left
-			if(event.keyCode == 37) {
-				if(hwd.prev != null) {
-					var e = new Event('click');
-					hwd.view.remove();
-					$('#elem' + hwd.prev.id)[0].dispatchEvent(e);
-				}
-			}
+		if(event.keyCode == 37 && hwd.prev != null) { // left
+			var e = new Event('click');
+			hwd.view.remove(); // remove old view before 'clicking' the new one
+			$('#elem' + hwd.prev.id)[0].dispatchEvent(e);
+		}
 
-			// right
-			if(event.keyCode == 39) {
-				if(hwd.next != null) {
-					var e = new Event('click');
-					hwd.view.remove();
-					$('#elem' + hwd.next.id)[0].dispatchEvent(e);
-				}
-			}
-		};
+		if(event.keyCode == 39 && hwd.next != null) { // right
+			var e = new Event('click');
+			hwd.view.remove();
+			$('#elem' + hwd.next.id)[0].dispatchEvent(e);
+		}
+	};
 }
