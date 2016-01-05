@@ -35,6 +35,9 @@ function akvideoviewer(elem) {
 
 	this.view.append(this.video)
 
+	this.prev = null;
+	this.next = null;
+
 	akvideoviewer.prototype.close = function() {
 		if(event.target.className == "akvideo")
 			return;
@@ -68,7 +71,7 @@ function akvideoviewer(elem) {
 		//my.video.on('click', my.close)
 		my.view.on('click', my.close)
 
-		registerNavigationKeys()
+		registerNavigationKeys(my)
 	}
 }
 
@@ -88,6 +91,9 @@ function akviewer(elem) {
 	this.after = function(){}
 
 	this.view.append(this.image)
+
+	this.prev = null;
+	this.next = null;
 
 	akviewer.prototype.close = function() {
 		if(event.target.className == "akimage")
@@ -122,27 +128,34 @@ function akviewer(elem) {
 		})
 		// my.image.on('click', my.close)
 		my.view.on('click', my.close)
-		registerNavigationKeys()
+		registerNavigationKeys(my)
 
 	}
 }
 
-function registerNavigationKeys() {
+function registerNavigationKeys(hwd) {
 		document.onkeyup = function(event) {
 			if(event.keyCode == 27) { 
 			// ESC 
-				my.close();		
+				hwd.close();
 			}
 
 			// left
 			if(event.keyCode == 37) {
-				// easy way would be to redirect the "...?img=xy" url to xy+1 url
-				// but diirty as hell
+				if(hwd.prev != null) {
+					var e = new Event('click');
+					hwd.view.remove();
+					$('#elem' + hwd.prev.id)[0].dispatchEvent(e);
+				}
 			}
 
 			// right
-			if(event.keycode == 39) {
-
+			if(event.keyCode == 39) {
+				if(hwd.next != null) {
+					var e = new Event('click');
+					hwd.view.remove();
+					$('#elem' + hwd.next.id)[0].dispatchEvent(e);
+				}
 			}
 		};
 }

@@ -13,18 +13,15 @@ var find = function(coll, f){
 }
 
 var sharedbefore = function (){
-		$("body").css('overflow', 'hidden')
-		classie.addClass( aidskrebs.Gallery, 'blurry' );
+	$("body").css('overflow', 'hidden');
+	classie.addClass( aidskrebs.Gallery, 'blurry' );
 }
 
 var sharedafter = function (){
-		$("body").css('overflow', 'scroll')
-		classie.removeClass( aidskrebs.Gallery, 'blurry' );
-		history.pushState({}, 'A I D S K R E B S', '/');
+	$("body").css('overflow', 'scroll');
+	classie.removeClass( aidskrebs.Gallery, 'blurry' );
+	history.pushState({}, 'A I D S K R E B S', '/');
 }
-
-
-
 
 aidskrebs = {
 	Gallery: null,
@@ -70,7 +67,26 @@ aidskrebs = {
 				for(var i = 0; i < data.images.length; i++){
 					var item = createImageElement(data.images[i]);
 					$("#grid").append(item);
-					clicker("#elem"+data.images[i].id,data.images[i])
+
+					var current = data.images[i];
+					var prev = null;
+					var next = null;
+					if(i == 0) {
+						prev = null; // hack, stay at the beginning of the list
+						next = data.images[i + 1];
+					}
+
+					if(i > 0 && i < data.images.length - 1){
+						prev = data.images[i - 1];
+						next = data.images[i + 1];
+					}
+					
+					if(i == data.images.length - 1) {
+						prev = data.images[i - 1];
+						next = null; // hack, stay at the end of the list
+					}
+
+					clicker("#elem" + current.id, current, prev, next);
 				}
 				imagesLoaded(aidskrebs.Gallery, function(){
 					classie.add( aidskrebs.Gallery, 'loaded' );
@@ -104,7 +120,26 @@ aidskrebs = {
 						var item = createImageElement(data.images[i]);
 						$("#grid").append(item);
 						aidskrebs.Masonry.appended(item);
-						clicker("#elem"+data.images[i].id,data.images[i]);
+
+						var current = data.images[i];
+						var prev = null;
+						var next = null;
+						if(i == 0) {
+							prev = null; // hack, stay at the beginning of the list
+							next = data.images[i + 1];
+						}
+
+						if(i > 0 && i < data.images.length - 1){
+							prev = data.images[i - 1];
+							next = data.images[i + 1];
+						}
+
+						if(i == data.images.length - 1) {
+							prev = data.images[i - 1];
+							next = null; // hack, stay at end of list
+						}
+
+						clicker("#elem" + current.id, current, prev, next);
 					}
 					imagesLoaded(aidskrebs.Gallery, function(){
 						aidskrebs.Masonry.layout()
@@ -119,7 +154,7 @@ aidskrebs = {
 
 function createImageElement(image) {
 
-	var src = "images/" + image.thumb
+	var src = fuckinghardocdedURL+ "images/" + image.thumb
 	var info = ''
 	info += '<a class="linksrc" href="' + image.source + '"><i class="fa fa-external-link-square"></i></a>'
 	info += '<span>' + image.channel + '</span>'
@@ -130,7 +165,7 @@ function createImageElement(image) {
 	return item
 }
 
-function clicker(elemid, i){
+function clicker(elemid, i, prev, next){
 	$(elemid).on('click', function(id) {
 		if(i.img.endsWith(".webm")){
 			var videoviewer = new akvideoviewer($(".container"))
@@ -139,6 +174,8 @@ function clicker(elemid, i){
 				//history.pushState({}, 'A I D S K R E B S', fuckinghardocdedURL + '/?img='+i.id);
 			}
 			videoviewer.after = sharedafter
+			videoviewer.prev = prev;
+			videoviewer.next = next;
 			videoviewer.open(fuckinghardocdedURL + "images/"+i.img)
 		} else {
 			var viewer = new akviewer($(".container"))
@@ -147,6 +184,8 @@ function clicker(elemid, i){
 				//history.pushState({}, 'A I D S K R E B S', fuckinghardocdedURL + '/?img='+i.id);
 			}
 			viewer.after = sharedafter
+			viewer.prev = prev;
+			viewer.next = next;
 			viewer.open(fuckinghardocdedURL + "images/"+i.img)
 		}
 		return false
